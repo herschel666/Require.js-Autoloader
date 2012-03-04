@@ -27,19 +27,22 @@ function ($, _, Backbone, Observer) {
 		Router = Backbone.Router.extend({
 
 			routes : {
-				'/datepicker/:date/' : 'result'
+				'datepicker/:date/' : 'result'
 			},
 
-			initialize : function () {
+			initialize : function (args) {
 
-				var view = new InputView();
+				if ( args.subPages ) {
+					Backbone.history.loadUrl('datepicker/' + args.subPages, true);
+					return;
+				}
+
+				var view = new InputView(this);
 
 			},
 
 			result : function (date) {
-
 				var view = new ResultView(date);
-
 			}
 
 		}),
@@ -52,7 +55,8 @@ function ($, _, Backbone, Observer) {
 				'click button' : 'submitDate'
 			},
 
-			initialize : function () {
+			initialize : function (router) {
+				this.router = router;
 				this.render( function () {
 					$('#datepicker').datepicker({
 						dateFormat : 'dd-mm-yy'
@@ -77,7 +81,7 @@ function ($, _, Backbone, Observer) {
 				}
 
 				$elem.prop('value', '');
-				location.hash = '/datepicker/' + date + '/';
+				this.router.navigate('datepicker/' + date + '/', true);
 			}
 
 		}),
@@ -101,8 +105,8 @@ function ($, _, Backbone, Observer) {
 
 		}),
 
-		init = function () {
-			return new Router();
+		init = function (args) {
+			return new Router(args);
 		};
 
 		return {

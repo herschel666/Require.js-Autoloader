@@ -15,20 +15,22 @@ require(['jQuery', 'Underscore', 'Backbone', 'Observer'], function ($, _, Backbo
 	var Router = Backbone.Router.extend({
 
 		routes : {
-			'/:site/*sub' : 'autoLoad'
+			':site/*sub' : 'autoLoad'
 		},
 
 		initialize : function () {
-			location.hash = location.hash || '/index/';
+			location.hash = location.hash || 'index/';
 
 			Backbone.history.start();
 		},
 
-		autoLoad : function (site) {
+		autoLoad : function (site, sub) {
 			var path = 'sites/' + site + '/app';
 
 			require([path], function (App) {
-				App.init();
+				App.init({
+					subPages : sub
+				});
 			});
 		}
 	}),
